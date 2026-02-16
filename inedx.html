@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>For You ❤️</title>
+
+<style>
+body{
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    overflow:hidden;
+    background:black;
+}
+
+/* Common Page */
+.page{
+    position:absolute;
+    width:100%;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    transition:1s;
+}
+
+/* PAGE 1 */
+#page1{
+    background: radial-gradient(circle at center, #1a0000, #000000);
+    color:white;
+}
+
+.love{
+    font-size:40px;
+    font-weight:bold;
+    color:#ff1a4d;
+    text-shadow:0 0 20px #ff4d6d, 0 0 40px red;
+}
+
+button{
+    margin-top:30px;
+    padding:12px 30px;
+    font-size:18px;
+    border:none;
+    border-radius:30px;
+    background:#ff1a4d;
+    color:white;
+    cursor:pointer;
+    box-shadow:0 0 20px #ff1a4d;
+}
+
+/* PAGE 2 */
+#page2{
+    background: radial-gradient(circle at top, #f3efef, #000000 70%);
+    opacity:0;
+    pointer-events:none;
+    color:white;
+}
+
+/* Canvas */
+canvas{
+    position:absolute;
+    top:0;
+    left:0;
+}
+
+/* Glass Box */
+.glassBox{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    padding:40px 60px;
+    border-radius:20px;
+    backdrop-filter: blur(15px);
+    background: rgba(255, 255, 255, 0.462);
+    text-align:center;
+    box-shadow:0 0 40px rgba(255,0,0,0.4);
+}
+
+.title{
+    font-size:28px;
+    margin-bottom:20px;
+    color:#ff4d6d;
+}
+
+.shayari{
+    font-size:20px;
+    min-height:80px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PAGE 1 -->
+<div class="page" id="page1">
+    <div class="love">FOR YOU ❤️</div>
+    <button onclick="nextPage()">Click Here</button>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" id="page2">
+    <canvas id="c"></canvas>
+
+    <div class="glassBox">
+        <div class="title">💖 For Someone Special 💖</div>
+        <div class="shayari" id="text"></div>
+    </div>
+</div>
+
+<!-- 🎵 BACKGROUND MUSIC -->
+<audio id="bgMusic" loop>
+    <source src="song.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+/* ===== PAGE CHANGE ===== */
+function nextPage(){
+    document.getElementById("page1").style.opacity="0";
+    document.getElementById("page1").style.pointerEvents="none";
+
+    document.getElementById("page2").style.opacity="1";
+    document.getElementById("page2").style.pointerEvents="all";
+
+    startTypewriter();
+
+    // Play music when button clicked
+    document.getElementById("bgMusic").play();
+}
+
+/* Autoplay fix (agar browser block kare) */
+document.body.addEventListener("click", function(){
+    document.getElementById("bgMusic").play();
+});
+
+
+/* ===== HEART ANIMATION ===== */
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+ctx.translate(canvas.width/2, canvas.height/2);
+
+function heartX(k){
+    return 16 * Math.pow(Math.sin(k),3);
+}
+
+function heartY(k){
+    return 13*Math.cos(k)
+        -5*Math.cos(2*k)
+        -2*Math.cos(3*k)
+        -Math.cos(4*k);
+}
+
+function drawHeart(){
+    ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
+    ctx.beginPath();
+    for(let i = 0; i < Math.PI*2; i += 0.02){
+        let x = heartX(i) * 12;
+        let y = heartY(i) * 12;
+        ctx.lineTo(x, -y);
+    }
+    ctx.strokeStyle = "#ff1a4d";
+    ctx.shadowColor = "#ff4d6d";
+    ctx.shadowBlur = 25;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    requestAnimationFrame(drawHeart);
+}
+drawHeart();
+
+/* ===== TYPEWRITER ===== */
+const message = `Har pal tumhara hi intezaar rehta hai,
+Tum saath ho to har khushi paas rehti hai ❤️`;
+
+let i = 0;
+
+function startTypewriter(){
+    function type(){
+        if(i < message.length){
+            document.getElementById("text").innerHTML += 
+                message.charAt(i) === "\n" ? "<br>" : message.charAt(i);
+            i++;
+            setTimeout(type,40);
+        }
+    }
+    type();
+}
+
+</script>
+
+</body>
+</html>
